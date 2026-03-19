@@ -4,6 +4,8 @@ import com.study.springbootstudy.common.ApiResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -15,6 +17,7 @@ public class GlobalExceptionHandler {
     }
 
     // 2. @Valid 검증 실패 시 발생하는 에러 처리 (400 에러)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<String> handleValidationException(MethodArgumentNotValidException e) {
         // 첫 번째 에러 메시지만 가져오기

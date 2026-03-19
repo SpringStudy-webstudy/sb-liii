@@ -1,0 +1,17 @@
+### 1. 성공 케이스 (정상 데이터)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "승준",
+  "content": "10글자ㅏㅏㅏㅏㅏㅏ"
+}
+
+### 2. 실패 케이스 (Validation 에러 유도)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": "에러 유도"
+}
