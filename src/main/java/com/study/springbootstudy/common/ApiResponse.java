@@ -1,17 +1,23 @@
-package com.study.springbootstudy.common; // 패키지 경로 추가
+package com.study.springbootstudy.common;
 
-import lombok.AllArgsConstructor; // 임포트 추가
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter // 이 어노테이션이 있어야 아래 필드들을 '사용'하는 것으로 인식함
-@AllArgsConstructor // 이 어노테이션이 있어야 '4개의 인수'를 받는 생성자가 만들어짐
+@Getter
+@AllArgsConstructor
 public class ApiResponse<T> {
-    private boolean isSuccess;
-    private String code;
-    private String message;
-    private T result;
+    private final boolean isSuccess;
+    private final String code;
+    private final String message;
+    private final T result;
 
+    // 성공 시 응답 생성 메서드
     public static <T> ApiResponse<T> onSuccess(T result) {
         return new ApiResponse<>(true, "COMMON200", "요청에 성공하였습니다.", result);
+    }
+
+    // 실패 시 응답 생성 메서드
+    public static <T> ApiResponse<T> onFailure(String code, String message, T result) {
+        return new ApiResponse<>(false, code, message, result);
     }
 }
