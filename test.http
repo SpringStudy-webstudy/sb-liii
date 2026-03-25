@@ -1,17 +1,13 @@
-### 1. 성공 케이스 (정상 데이터)
+
+### 1. 게시글 생성 (POST)
 POST http://localhost:8080/api/posts
 Content-Type: application/json
 
 {
-  "title": "승준",
-  "content": "10글자ㅏㅏㅏㅏㅏㅏ"
+  "title": "첫 DB 저장 테스트!",
+  "content": "프로비 프로젝트 화이팅! 10글자 넘기기."
 }
 
-### 2. 실패 케이스 (Validation 에러 유도)
-POST http://localhost:8080/api/posts
-Content-Type: application/json
+### 2. 게시글 조회 (GET)
 
-{
-  "title": "",
-  "content": "에러 유도"
-}
+GET http://localhost:8080/api/posts/999
