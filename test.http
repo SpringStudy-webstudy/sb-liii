@@ -4,10 +4,10 @@ POST http://localhost:8080/api/posts
 Content-Type: application/json
 
 {
-  "title": "첫 DB 저장 테스트!",
-  "content": "프로비 프로젝트 화이팅! 10글자 넘기기."
+  "title": "스프링부트 첫 DB",
+  "content": "10글자 채우기ㅣㅣㅣㅣㅣㅣ"
 }
 
 ### 2. 게시글 조회 (GET)
 
-GET http://localhost:8080/api/posts/999
+GET http://localhost:8080/api/posts/1

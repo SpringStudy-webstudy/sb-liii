@@ -36,4 +36,32 @@ public class PostService {
         // 2. 찾은 게시글을 DTO에 담아 컨트롤러로 보냄
         return PostResponseDto.from(post);
     }
+
+    // [수정] 더티 체킹 활용
+    @Transactional
+    public PostResponseDto updatePost(Long postId, PostRequestDto request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException("POST404", "해당 게시글이 존재하지 않습니다."));
+
+        // 1. 비밀번호 검증
+        post.validatePassword(request.getPassword());
+
+        // 2. 수정 (트랜잭션 종료 시 JPA가 알아서 DB에 반영해 줌)
+        post.update(request.getTitle(), request.getContent());
+
+        return PostResponseDto.from(post);
+    }
+
+    // [삭제]
+    @Transactional
+    public void deletePost(Long postId, String password) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException("POST404", "해당 게시글이 존재하지 않습니다."));
+
+        // 1. 비밀번호 검증
+        post.validatePassword(password);
+
+        // 2. 삭제
+        postRepository.delete(post);
+    }
 }
