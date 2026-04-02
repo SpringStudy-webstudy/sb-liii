@@ -30,7 +30,7 @@ public class PostController {
     }
 
     // 게시글 수정 (PUT)
-    @PutMapping("/api/posts/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<PostResponseDto> updatePost(
             @PathVariable Long id,
             @RequestBody @Valid PostRequestDto request) {
@@ -39,7 +39,7 @@ public class PostController {
     }
 
     // 게시글 삭제 (DELETE) - 비밀번호를 쿼리 파라미터(?password=...)로 받음
-    @DeleteMapping("/api/posts/{id}")
+    @DeleteMapping("/{id}")
     public ApiResponse<Void> deletePost(
             @PathVariable Long id,
             @RequestParam String password) {

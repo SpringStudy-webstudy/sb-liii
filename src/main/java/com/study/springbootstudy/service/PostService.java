@@ -22,6 +22,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
+                .password(request.getPassword())
                 .build();
 
         // 2. DB에 저장하고, 저장된 게시글의 번호(ID)를 반환
