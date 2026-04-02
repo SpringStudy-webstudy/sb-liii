@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true) // 기본적으로 읽기 전용으로 설정하여 성능을 높인다.
+@Transactional(readOnly = true) // 기본적으로 읽기 전용으로 설정하여 성능을 높임
 public class PostService {
 
     private final PostRepository postRepository;
 
-    @Transactional // 데이터를 수정, 저장할 때는 이 어노테이션이 꼭 필요하다.
+    @Transactional // 데이터를 수정, 저장할 때는 이 어노테이션이 꼭 필요함
     public Long createPost(PostRequestDto request) {
         // 1. DTO를 Entity(Post)로 변환
         Post post = Post.builder()
