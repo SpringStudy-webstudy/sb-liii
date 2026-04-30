@@ -2,37 +2,47 @@ package com.study.springbootstudy.domain;
 
 import com.study.springbootstudy.common.exception.GeneralException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false, length = 1000)
     private String content;
 
-    // 추가: 작성자 확인용 비밀번호
-    private String password;
+    // 회원(Member)과의 다대일 연관관계 설정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    // 1. 게시글 수정 로직 (Setter 대신 의미 있는 메서드 사용)
+    @Builder
+    public Post(String title, String content, Member member) {
+        this.title = title;
+        this.content = content;
+        this.member = member;
+    }
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    // 2. 권한 검증 로직 (비밀번호 일치 여부 확인)
-    public void validatePassword(String inputPassword) {
-        if (!this.password.equals(inputPassword)) {
-            throw new GeneralException("AUTH403", "비밀번호가 일치하지 않습니다. 수정/삭제 권한이 없습니다.");
+    // 작성자 본인인지 확인하는 검증 메서드로 변경
+    public void validateAuthor(String currentUserEmail) {
+        if (!this.member.getEmail().equals(currentUserEmail)) {
+            throw new GeneralException("AUTH403", "해당 게시글에 대한 권한이 없습니다.");
         }
     }
 }

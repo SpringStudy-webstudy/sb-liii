@@ -8,42 +8,43 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal; // 👈 시큐리티가 제공하는 인증 정보 객체
+
 @RestController
-@RequiredArgsConstructor // Service를 주입받기 위해 꼭 필요
-@RequestMapping("/api/posts") // 이 컨트롤러의 기본 주소를 설정
+@RequiredArgsConstructor
+@RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;
 
-    // 1. 게시글 생성 API
+    // [생성] Principal 객체를 통해 현재 로그인한 사용자의 이메일을 가져옴
     @PostMapping
-    public ApiResponse<Long> createPost(@Valid @RequestBody PostRequestDto request) {
-        Long savedPostId = postService.createPost(request);
-        return ApiResponse.onSuccess(savedPostId); // 성공 시 저장된 게시글의 ID를 반환
+    public ApiResponse<Long> createPost(@RequestBody @Valid PostRequestDto request, Principal principal) {
+        // principal.getName()을 호출하면, 필터에서 토큰을 쪼개 저장했던 '이메일'이 나온다
+        Long postId = postService.createPost(request, principal.getName());
+        return ApiResponse.onSuccess(postId);
     }
 
-    // 2. 게시글 상세 조회 API
+    // [조회] 단건 조회 (조회는 권한 검증 없이 누구나 볼 수 있도록 둔다.)
     @GetMapping("/{postId}")
     public ApiResponse<PostResponseDto> getPost(@PathVariable Long postId) {
         PostResponseDto response = postService.getPostDetail(postId);
-        return ApiResponse.onSuccess(response); // 성공 시 게시글 상세 정보를 반환
+        return ApiResponse.onSuccess(response);
     }
 
-    // 게시글 수정 (PUT)
+    // [수정] URL 경로의 ID, 수정할 데이터, 그리고 로그인한 사용자(Principal)를 받는다.
     @PutMapping("/{id}")
-    public ApiResponse<PostResponseDto> updatePost(
-            @PathVariable Long id,
-            @RequestBody @Valid PostRequestDto request) {
-        PostResponseDto responseDto = postService.updatePost(id, request);
-        return ApiResponse.onSuccess(responseDto);
+    public ApiResponse<PostResponseDto> updatePost(@PathVariable Long id,
+                                                   @RequestBody @Valid PostRequestDto request,
+                                                   Principal principal) {
+        PostResponseDto response = postService.updatePost(id, request, principal.getName());
+        return ApiResponse.onSuccess(response);
     }
 
-    // 게시글 삭제 (DELETE) - 비밀번호를 쿼리 파라미터(?password=...)로 받음
+    // [삭제] 기존의 @RequestParam String password를 삭제하고 Principal로 교체한다.
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deletePost(
-            @PathVariable Long id,
-            @RequestParam String password) {
-        postService.deletePost(id, password);
-        return ApiResponse.onSuccess(null);
+    public ApiResponse<Void> deletePost(@PathVariable Long id, Principal principal) {
+        postService.deletePost(id, principal.getName());
+        return ApiResponse.onSuccess(null); // 삭제는 돌려줄 데이터가 없으므로 null 반환
     }
 }
