@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. 우리가 직접 던진 GeneralException 처리
+    // 1. GeneralException 처리
     @ExceptionHandler(GeneralException.class)
     public ApiResponse<String> handleGeneralException(GeneralException e) {
         return ApiResponse.onFailure(e.getErrorCode(), e.getMessage(), null);
