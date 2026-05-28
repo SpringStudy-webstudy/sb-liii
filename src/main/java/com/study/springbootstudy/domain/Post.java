@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+// 👇 7주차 미션: 테이블 이름과 인덱스(목차) 설정 추가!
+@Table(name = "post", indexes = {
+        @Index(name = "idx_post_title", columnList = "title")
+})
 public class Post {
 
     @Id

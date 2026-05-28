@@ -7,6 +7,8 @@ import com.study.springbootstudy.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import com.study.springbootstudy.dto.PostPageResponseDto;
+import com.study.springbootstudy.dto.PostWithCommentRequestDto;
 
 import java.security.Principal; // 👈 시큐리티가 제공하는 인증 정보 객체
 
@@ -16,6 +18,19 @@ import java.security.Principal; // 👈 시큐리티가 제공하는 인증 정�
 public class PostController {
 
     private final PostService postService;
+
+    // [목록 조회] 페이징 처리된 게시글 목록 반환 (누구나 볼 수 있으므로 토큰 검증 안 함)
+    @GetMapping
+    public ApiResponse<PostPageResponseDto> getPostList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        // 페이지 번호가 1보다 작으면 1로 강제 고정 (오류 방지)
+        int validatedPage = Math.max(1, page);
+
+        PostPageResponseDto response = postService.getPostList(validatedPage, size);
+        return ApiResponse.onSuccess(response);
+    }
 
     // [생성] Principal 객체를 통해 현재 로그인한 사용자의 이메일을 가져옴
     @PostMapping
@@ -46,5 +61,16 @@ public class PostController {
     public ApiResponse<Void> deletePost(@PathVariable Long id, Principal principal) {
         postService.deletePost(id, principal.getName());
         return ApiResponse.onSuccess(null); // 삭제는 돌려줄 데이터가 없으므로 null 반환
+    }
+
+    // 게시글 + 댓글 동시 저장
+    @PostMapping("/with-comment")
+    public ApiResponse<Long> createPostWithComment(
+            @RequestBody @Valid PostWithCommentRequestDto request,
+            Principal principal) {
+
+        // principal.getName()을 통해 토큰을 통과한 유저의 이메일을 Service로 전달
+        Long postId = postService.createPostWithComment(request, principal.getName());
+        return ApiResponse.onSuccess(postId);
     }
 }
