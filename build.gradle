@@ -24,7 +24,7 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
+def var = dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     // implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -35,7 +35,19 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Spring Security (비밀번호 암호화 및 전역 보안 필터용)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // JWT 발급 및 검증을 위한 jjwt 라이브러리 (최신 0.12.x 버전 기준)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Redis 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
+var
 
 tasks.named('test') {
     useJUnitPlatform()

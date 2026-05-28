@@ -25,6 +25,10 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     // 권한 검증 로직
     public void validatePassword(String inputPassword) {
         if (!this.password.equals(inputPassword)) {
